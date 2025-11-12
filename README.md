@@ -1,1 +1,3 @@
 # progeprojekt
+
+Koostame programmi, mis võtab sisendiks kulud ja tulud, mille inimene on sisestanud ning see salvestatakse faili. Selle illustreerimiseks kasutame graafikuid, kuidas kulud ja tulud jaotuvad. Projekt aitab inimesel automatiseerida kulude ja sissetulekute jälgimist ning aru saada, mille peale raha peamiselt kulub. Valisime selle projekti, sest saame seda kasutada abivahendina tulevikus.
