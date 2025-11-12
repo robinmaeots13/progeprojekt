@@ -2,9 +2,7 @@
 
 from datetime import datetime
 
-pank = input("Sisesta panga nimi: ").strip().lower()
-csv_fail = input("Sisesta .csv faili nimi: ")
-kirjuta_faili = input("Kas soovide kulud ja tulud kirjutada faili (Jah/Ei)? ")
+küsimus = input("Kas soovite oma kulud ja tulud kirjutada faili või pangast importida (kirjutada ise/importida)? ").strip().lower()
 
 def kirjuta_ise(kirjuta_faili):
     with open("tulud.txt", "w", encoding="UTF-8") as fail:
@@ -45,13 +43,7 @@ def kirjuta_ise(kirjuta_faili):
 
     raha_üle = tulud_kokku - kulud_kokku
     print(f"Raha jäi kuu jooksul üle {raha_üle} eurot.")
-
-
-if csv_fail == "" and kirjuta_faili == "Jah":
-    kirjuta_ise(kirjuta_faili)
-    
-
-
+ 
 def kuva_kulud_tulud(pank, csv_fail):
     try:
         with open(csv_fail, 'r', encoding='utf-8') as fail:
@@ -162,5 +154,10 @@ def kuva_kulud_tulud(pank, csv_fail):
 
         print(f"Panga '{pank}' kulud: {kulud:.2f} EUR")
         print(f"Panga '{pank}' tulud: {tulud:.2f} EUR")
-
-kuva_kulud_tulud(pank, csv_fail)
+        
+if küsimus == 'importida':
+    pank = input("Sisesta panga nimi: ").strip().lower()
+    csv_fail = input("Sisesta .csv faili nimi: ")
+    kuva_kulud_tulud(pank, csv_fail)
+else:
+    kirjuta_ise(küsimus)
