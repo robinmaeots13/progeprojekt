@@ -1,3 +1,7 @@
+# nimed ja mis teeb
+
+from datetime import datetime
+
 pank = input("Sisesta panga nimi: ").strip().lower()
 csv_fail = input("Sisesta .csv faili nimi: ")
 
@@ -12,6 +16,7 @@ def kuva_kulud_tulud(pank, csv_fail):
     if pank == "luminor": # Luminor CSV formaadi töötlemine
         kulud = 0.0
         tulud = 0.0
+        sisend = []
 
         for rida in read_data[1:]:  # Jäta vahele päis
             veerud = rida.strip().split(';')
@@ -26,6 +31,9 @@ def kuva_kulud_tulud(pank, csv_fail):
             except ValueError:
                 print(f"Viga rea väärtuse teisendamisel: {veerud[6]}")
                 continue  # jätab vahele rea, kui teisendamine ebaõnnestub
+            
+            kuupaev = datetime.strptime(veerud[2], "%d.%m.%Y").date() # Kuupäeva importimine csv failist
+            sisend.append((kuupaev, summa, veerud[5])) # Lisa andmed sisendisse
 
             if veerud[5] == 'D':
                 kulud += abs(summa)
@@ -34,6 +42,7 @@ def kuva_kulud_tulud(pank, csv_fail):
 
         print(f"Panga '{pank}' kulud: {kulud:.2f} EUR")
         print(f"Panga '{pank}' tulud: {tulud:.2f} EUR")
+        print(f"{sisend}")
 
     if pank == "lhv": # LHV panga CSV formaadi töötlemine
         kulud = 0.0
