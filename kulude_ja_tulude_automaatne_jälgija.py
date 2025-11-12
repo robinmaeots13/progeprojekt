@@ -71,7 +71,8 @@ def kuva_kulud_tulud(pank, csv_fail):
                 print(f"Viga rea väärtuse teisendamisel: {veerud[6]}")
                 continue  # jätab vahele rea, kui teisendamine ebaõnnestub
             
-            kuupaev = datetime.strptime(veerud[2], "%d.%m.%Y").date() # Kuupäeva importimine csv failist
+            kuupaev_formatimata = datetime.strptime(veerud[2], "%d.%m.%Y") # Kuupäeva importimine csv failist
+            kuupaev = kuupaev_formatimata.strftime("%d.%m.%Y")
             sisend.append((kuupaev, summa, veerud[5])) # Lisa andmed sisendisse
 
             if veerud[5] == 'D':
@@ -86,6 +87,7 @@ def kuva_kulud_tulud(pank, csv_fail):
     if pank == "lhv": # LHV panga CSV formaadi töötlemine
         kulud = 0.0
         tulud = 0.0
+        sisend = []
 
         for rida in read_data[1:]:  # Jäta vahele päis
             veerud = rida.strip().split(',')
@@ -95,6 +97,10 @@ def kuva_kulud_tulud(pank, csv_fail):
 
             summa = float(veerud[8])
 
+            kuupaev_formatimata = datetime.strptime(veerud[2], "%Y-%m-%d").date() # Kuupäeva importimine csv failist
+            kuupaev = kuupaev_formatimata.strftime("%d.%m.%Y")
+            sisend.append((kuupaev, summa, veerud[7].strip('"'))) # Lisa andmed sisendisse
+
             if veerud[7].strip('"') == "C":
                 tulud += summa
             elif veerud[7].strip('"') == "D":
@@ -102,10 +108,12 @@ def kuva_kulud_tulud(pank, csv_fail):
 
         print(f"Panga '{pank}' kulud: {kulud:.2f} EUR")
         print(f"Panga '{pank}' tulud: {tulud:.2f} EUR")
+        print(f"{sisend}")
 
     if pank == "swedbank" or pank == 'swedpank' or pank == 'swed': # Swedbank panga CSV formaadi töötlemine
         kulud = 0.0
         tulud = 0.0
+        sisend = []
 
         for rida in read_data[1:-3]:  # Jäta vahele päis
             veerud = rida.strip().split(';')
@@ -121,6 +129,15 @@ def kuva_kulud_tulud(pank, csv_fail):
                 print(f"Viga rea väärtuse teisendamisel: {veerud[5]}")
                 continue  # jätab vahele rea, kui teisendamine ebaõnnestub
 
+            kuupaev_tekst = veerud[2].strip('"') # Kuupäeva importimine csv failist ja eemaldamine jutumärkidest
+            kuupaev_formatimata = datetime.strptime(kuupaev_tekst, ("%d.%m.%Y")).date() # Kuupäeva muundamine kuupäeva objektiks
+            kuupaev = kuupaev_formatimata.strftime("%d.%m.%Y") # Kuupäeva vormindamine soovitud kujule dd.mm.yyyy
+
+            if veerud[7].strip('"') == "K": # Swedbankis on kreediti tähistus "K", mitte "C"
+                veerud[7] = "C"             # Muuda "K" "C"-ks, et ühtlustada teiste pankadega      
+
+            sisend.append((kuupaev, summa, veerud[7].strip('"'))) # Lisa andmed sisendisse
+
             if veerud[7].strip('"') == "K":
                 tulud += summa
             elif veerud[7].strip('"') == "D":
@@ -128,10 +145,12 @@ def kuva_kulud_tulud(pank, csv_fail):
 
         print(f"Panga '{pank}' kulud: {kulud:.2f} EUR")
         print(f"Panga '{pank}' tulud: {tulud:.2f} EUR")
+        print(f"{sisend}")
 
     if pank == "seb": # SEB CSV formaadi töötlemine
         kulud = 0.0
         tulud = 0.0
+        sisend = []
 
         for rida in read_data[1:]:  # Jäta vahele päis
             veerud = rida.strip().split(';')
@@ -147,6 +166,11 @@ def kuva_kulud_tulud(pank, csv_fail):
                 print(f"Viga rea väärtuse teisendamisel: {veerud[8]}")
                 continue  # jätab vahele rea, kui teisendamine ebaõnnestub
 
+            kuupaev_tekst = veerud[2].strip('"') # Kuupäeva importimine csv failist ja eemaldamine jutumärkidest
+            kuupaev_formatimata = datetime.strptime(kuupaev_tekst, ("%d.%m.%Y")).date() # Kuupäeva importimine csv failist
+            kuupaev = kuupaev_formatimata.strftime("%d.%m.%Y")
+            sisend.append((kuupaev, summa, veerud[7].strip('"'))) # Lisa andmed sisendisse
+
             if veerud[7].strip('"') == "C":
                 tulud += summa
             elif veerud[7].strip('"') == "D":
@@ -154,6 +178,7 @@ def kuva_kulud_tulud(pank, csv_fail):
 
         print(f"Panga '{pank}' kulud: {kulud:.2f} EUR")
         print(f"Panga '{pank}' tulud: {tulud:.2f} EUR")
+        print(f"{sisend}")
         
 if küsimus == 'importida':
     pank = input("Sisesta panga nimi: ").strip().lower()
