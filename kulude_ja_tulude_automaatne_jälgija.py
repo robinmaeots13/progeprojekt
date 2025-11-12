@@ -1,4 +1,10 @@
-# nimed ja mis teeb
+# ------------------------------------------------------------
+# Kulude ja tulude automaatne jälgija
+# Autorid: Robin Mäeots, Eduard Pavlov
+# Kirjeldus: Programm võimaldab kasutajal jälgida oma kulusid ja tulusid kas käsitsi faili 
+# kirjutades või pangast .csv faili importides.
+# Täpsem info README.md failis.
+# ------------------------------------------------------------
 
 from datetime import datetime
 
@@ -99,7 +105,7 @@ def kuva_kulud_tulud(pank, csv_fail):
 
             kuupaev_formatimata = datetime.strptime(veerud[2], "%Y-%m-%d").date() # Kuupäeva importimine csv failist
             kuupaev = kuupaev_formatimata.strftime("%d.%m.%Y")
-            sisend.append((kuupaev, summa, veerud[7].strip('"'))) # Lisa andmed sisendisse
+            sisend.append((kuupaev, abs(summa), veerud[7].strip('"'))) # Lisa andmed sisendisse
 
             if veerud[7].strip('"') == "C":
                 tulud += summa
